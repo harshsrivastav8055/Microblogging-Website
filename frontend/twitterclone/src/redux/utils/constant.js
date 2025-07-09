@@ -1,5 +1,5 @@
-export const USER_API_END_POINT = "https://microblogging-website-eur6.vercel.app/user";
-export const TWEET_API_END_POINT = "https://microblogging-website-eur6.vercel.app/tweet";
+export const USER_API_END_POINT = "https://microblogging-website-two.vercel.app/user";
+export const TWEET_API_END_POINT = "https://microblogging-website-two.vercel.app/tweet";
 
 export const timeSince = (timestamp) => {
     let time = Date.parse(timestamp);
