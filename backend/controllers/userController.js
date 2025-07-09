@@ -78,6 +78,27 @@ export const logout = (req, res) => {
         success: true
     })
 }
+export const getAllBookmarks = async (req, res) => {
+    try {
+      const userId = req.user._id; // ✅ logged-in user from auth middleware
+  
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      const tweets = await Tweet.find({ _id: { $in: user.bookmarks } })
+        .populate("user", "name username")
+        .sort({ createdAt: -1 });
+  
+      return res.status(200).json({
+        success: true,
+        tweets,
+      });
+  
+    } catch (error) {
+      console.error("getAllBookmarks error:", error);
+      return res.status(500).json({ message: "Failed to fetch bookmarks" });
+    }
+  };
 
 export const bookmark = async (req, res) => {
     try {
@@ -101,6 +122,8 @@ export const bookmark = async (req, res) => {
         console.log(error);
     }
 };
+
+
 export const getMyProfile = async (req, res) => {
     try {
         const id = req.params.id;
@@ -134,8 +157,8 @@ export const follow = async(req,res)=>{
     try {
         const loggedInUserId = req.body.id; 
         const userId = req.params.id; 
-        const loggedInUser = await User.findById(loggedInUserId);//patel
-        const user = await User.findById(userId);//keshav
+        const loggedInUser = await User.findById(loggedInUserId);
+        const user = await User.findById(userId);
         if(!user.followers.includes(loggedInUserId)){
             await user.updateOne({$push:{followers:loggedInUserId}});
             await loggedInUser.updateOne({$push:{following:userId}});

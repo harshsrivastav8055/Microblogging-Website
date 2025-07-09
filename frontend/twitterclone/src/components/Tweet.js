@@ -5,15 +5,14 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { CiBookmark } from "react-icons/ci";
 import axios from "axios";
-import { TWEET_API_END_POINT } from '../utils/constant';
+import { TWEET_API_END_POINT , USER_API_END_POINT } from  "../redux/utils/constant" ;
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { getRefresh } from '../redux/tweetSlice';
-import {timeSince} from "../utils/constant";
+import {timeSince} from "../redux/utils/constant";
 
 const Tweet = ({ tweet }) => {
     const { user } = useSelector(store => store.user); 
-     
     const dispatch = useDispatch();
     const likeOrDislikeHandler = async (id) => {
         try {
@@ -41,11 +40,29 @@ const Tweet = ({ tweet }) => {
             console.log(error);
         }
     }
+    const bookmarkHandler = async (id) => {
+        try {
+            const res = await axios.put(`${USER_API_END_POINT}/bookmark/${id}`, { id: user?._id }, {
+                withCredentials: true
+            });
+            console.log(res);
+            dispatch(getRefresh());
+            toast.success(res.data.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Bookmark action failed");
+            console.log(error);
+        }
+    };    
     return (
         <div className='border-b border-gray-200'>
             <div>
                 <div className='flex p-4'>
-                    <Avatar src="https://pbs.twimg.com/profile_images/1703261403237502976/W0SFbJVS_400x400.jpg" size="40" round={true} />
+                    {/* <Avatar src="https://pbs.twimg.com/profile_images/1703261403237502976/W0SFbJVS_400x400.jpg" size="40" round={true} /> */}
+                    <div className='w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center shadow-md'>
+                        <span className='text-white font-bold text-lg'>
+                            {tweet?.userDetails[0]?.name?.charAt(0) || 'U'}
+                        </span>
+                    </div>
                     <div className=' ml-2 w-full'>
                         <div className='flex items-center'>
                             <h1 className='font-bold'>{tweet?.userDetails[0]?.name}</h1>
@@ -64,12 +81,11 @@ const Tweet = ({ tweet }) => {
                             <div className='flex items-center'>
                                 <div onClick={() => likeOrDislikeHandler(tweet?._id)} className='p-2 hover:bg-pink-200 rounded-full cursor-pointer'>
                                     <CiHeart size="24px" />
-
                                 </div>
                                 <p>{tweet?.like?.length}</p>
                             </div>
                             <div className='flex items-center'>
-                                <div className='p-2 hover:bg-yellow-200 rounded-full cursor-pointer'>
+                                <div  onClick={() => bookmarkHandler(tweet?._id)} className='p-2 hover:bg-yellow-200 rounded-full cursor-pointer'>
                                     <CiBookmark size="24px" />
                                 </div>
                                 <p>0</p>
