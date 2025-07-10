@@ -13,5 +13,8 @@ router.route("/otheruser/:id").get(isAuthenticated, getOtherUsers);
 router.route("/follow/:id").post(isAuthenticated, follow);
 router.route("/unfollow/:id").post(isAuthenticated, unfollow);
 router.route("/bookmarks/all").get(isAuthenticated, getAllBookmarks);
-
+app.get("/", (req, res) => {
+    res.send("API is running ✅");
+  });
+  
 export default router;
