@@ -19,7 +19,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 app.use(cookieParser());
 const corsOptions = {
-    origin:"https://microblogging-website-frontened.vercel.app/",
+    origin:"http://localhost:3000",
     credentials:true
 }
 app.use(cors(corsOptions));
@@ -32,7 +32,3 @@ app.use("/api/v1/tweet", tweetRoute);
 app.listen(process.env.PORT ,() => {
     console.log(`Server listen at port ${process.env.PORT}`);
 })
-
-app.get("/", (req, res) => {
-    res.send("API is running ✅");
-  });
